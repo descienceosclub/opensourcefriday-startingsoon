@@ -7,7 +7,7 @@
   <title>The Open Source Friday — Descience Open Source Club</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
-    :root{--bg:#080907;--fg:#f5f4ef;--muted:#898a83;--line:rgba(255,255,255,.12);--accent:#ff674f;--accent-rgb:255,103,79;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
+    :root{--bg:#080907;--fg:#f5f4ef;--muted:#898a83;--line:rgba(255,255,255,.12);--accent:#0fffd1;--accent-rgb:15,255,209;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
     *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--sans)}
     body{min-height:100svh;overflow:hidden} button{font:inherit;color:inherit}
     .stage{position:relative;min-height:100svh;padding:32px clamp(24px,6vw,96px) 25px;display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
@@ -62,9 +62,9 @@
     document.getElementById('stop').addEventListener('click',()=>{admin.classList.remove('show');label.textContent='Meeting started';tagline.textContent='Build in the open.';});
     document.querySelectorAll('.theme').forEach(b=>b.addEventListener('click',()=>{document.querySelector('.theme.active').classList.remove('active');b.classList.add('active');stage.dataset.theme=b.dataset.themeChoice;}));
     const canvas=document.getElementById('matrix'),ctx=canvas.getContext('2d');let drops=[],matrixChars='アイウエオカキクケコサシスセソタチツテトナニヌネノ012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    function resizeMatrix(){const ratio=window.devicePixelRatio||1;canvas.width=innerWidth*ratio;canvas.height=innerHeight*ratio;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(ratio,0,0,ratio,0,0);drops=Array.from({length:Math.ceil(innerWidth/18)},()=>Math.random()*-80)}
-    function drawMatrix(){if(stage.dataset.theme==='terminal'){ctx.fillStyle='rgba(3,8,5,.12)';ctx.fillRect(0,0,innerWidth,innerHeight);ctx.font='14px monospace';for(let i=0;i<drops.length;i++){const ch=matrixChars[Math.floor(Math.random()*matrixChars.length)],x=i*18,y=drops[i]*18;ctx.fillStyle=Math.random()>.985?'#d7ffe2':'#35e85d';ctx.fillText(ch,x,y);if(y>innerHeight&&Math.random()>.972)drops[i]=Math.random()*-30;else drops[i]+=.35+Math.random()*.45}}else ctx.clearRect(0,0,innerWidth,innerHeight);requestAnimationFrame(drawMatrix)}
-    resizeMatrix();window.addEventListener('resize',resizeMatrix);drawMatrix();
+    function resizeMatrix(){const rect=stage.getBoundingClientRect(),width=Math.ceil(rect.width),height=Math.ceil(rect.height),ratio=window.devicePixelRatio||1;canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);canvas.style.width='100%';canvas.style.height='100%';ctx.setTransform(ratio,0,0,ratio,0,0);drops=Array.from({length:Math.ceil(width/18)},()=>Math.random()*-80)}
+    function drawMatrix(){const width=stage.clientWidth,height=stage.clientHeight;if(stage.dataset.theme==='terminal'){ctx.fillStyle='rgba(3,8,5,.12)';ctx.fillRect(0,0,width,height);ctx.font='14px monospace';for(let i=0;i<drops.length;i++){const ch=matrixChars[Math.floor(Math.random()*matrixChars.length)],x=i*18,y=drops[i]*18;ctx.fillStyle=Math.random()>.985?'#d7ffe2':'#35e85d';ctx.fillText(ch,x,y);if(y>height&&Math.random()>.972)drops[i]=Math.random()*-30;else drops[i]+=.35+Math.random()*.45}}else ctx.clearRect(0,0,width,height);requestAnimationFrame(drawMatrix)}
+    resizeMatrix();window.addEventListener('resize',resizeMatrix);new ResizeObserver(resizeMatrix).observe(stage);drawMatrix();
     setInterval(()=>{if(!ended&&remaining>0){remaining--;render();if(!remaining)finish()}},1000);
     function updateTime(){document.getElementById('localTime').textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}).format(new Date())}updateTime();setInterval(updateTime,15000);
     document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='+')document.getElementById('plus').click();if(e.key==='ArrowDown'||e.key==='-')document.getElementById('minus').click();});
